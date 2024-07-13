@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Compiled JavaScript files
+*.js
+*.js.map
+
+# TypeScript declaration files
+*.d.ts
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+
+# Mac system files
+.DS_Store
+
+# Build output directories
+dist/
+build/
+out/
+
+# Temporary files
+tmp/
+temp/
