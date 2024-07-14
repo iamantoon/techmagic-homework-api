@@ -11,6 +11,7 @@ import jwt from 'jsonwebtoken';
 import { ICarsService } from './cars.service.interface';
 import { IConfigService } from '../config/config.service.interface';
 import { IAuthRepository } from '../auth/auth.repository.interface';
+import { AuthMiddleware } from '../common/auth.middleware';
 
 @injectable()
 export class CarsController extends BaseController implements ICarsController {
@@ -26,13 +27,13 @@ export class CarsController extends BaseController implements ICarsController {
 				path: '/:carId/rent',
 				method: 'post',
 				func: this.rentCar,
-				middlewares: [new ValidateMiddleware(CreateRentalDto), new AuthGuard()],
+				middlewares: [new ValidateMiddleware(CreateRentalDto), new AuthMiddleware(this.configService.get('SECRET'))],
 			},
 			{
 				path: '/return',
 				method: 'post',
 				func: this.returnCar,
-				middlewares: [new ValidateMiddleware(ReturnCarDto), new AuthGuard()],
+				middlewares: [new ValidateMiddleware(ReturnCarDto), new AuthMiddleware(this.configService.get('SECRET'))],
 			},
 		]);
 	}
@@ -63,7 +64,7 @@ export class CarsController extends BaseController implements ICarsController {
 
 	async rentCar(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
-			const car = await this.carsService.rentCar(req.body);
+			await this.carsService.rentCar(req.body);
 			this.ok(res, { message: 'Car rented successfully' });
 		} catch (error) {
 			next(new HTTPError(500, 'Failed to rent car', 'rentCar'));
