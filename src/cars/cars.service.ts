@@ -53,17 +53,13 @@ export class CarsService implements ICarsService {
 				status: 'active',
 			});
 	
-			console.log('const rental = ', rental);
-	
-			await rental.save(); // causes error
-			console.log('Rental saved successfully.');
-	
+			await rental.save();
+			
 			car.available = false;
 			await car.save();
 	
 			return car;
 		} catch (error) {
-			console.error('Error in rentCar method:', error);
 			throw new Error(`Failed to rent car`);
 		}
 	}
@@ -107,9 +103,7 @@ export class CarsService implements ICarsService {
 
 	private calculateRentalCost(expectedReturnDate: Date, startDate: Date, year: number): number {
 		const durationInDays = (new Date(expectedReturnDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24);
-		console.log('const durationInDays = ', durationInDays);
 		const dailyRate = this.calculateDefaultRentalCost(year);
-		console.log('const dailyRate = ', durationInDays);
 		return Math.ceil(durationInDays) * dailyRate;
 	}
 
