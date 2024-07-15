@@ -12,6 +12,7 @@ import { json } from 'body-parser';
 import { TYPES } from './types';
 import { Server } from 'http';
 import 'reflect-metadata';
+import { setupSwagger } from './swagger';
 
 @injectable()
 export class App {
@@ -51,6 +52,7 @@ export class App {
 		this.useMiddleware();
 		this.useRoutes();
 		this.useExceptionFilters();
+		setupSwagger(this.app);
 		await this.mongoService.connect();
 		this.server = this.app.listen(this.port);
 	}

@@ -22,6 +22,7 @@ export class CarsService implements ICarsService {
 			return cars.map((car) => ({
 				...car.toObject(),
 				rentCost: this.calculateDiscountedRentalCost(car.year, discount),
+				discount: discount
 			}));
 		} else {
 			return cars.map((car) => ({
@@ -30,6 +31,26 @@ export class CarsService implements ICarsService {
 			}));
 		}
 	}
+
+	async getCarById(carId: string, userId?: string): Promise<CarWithRentCost> {
+        const car = await this.carsRepository.getCarById(carId);
+        if (!car) {
+            throw new Error('Car not found');
+        }
+
+        let rentCost;
+        if (userId) {
+            const discount = await this.calculateDiscount(userId);
+            rentCost = this.calculateDiscountedRentalCost(car.year, discount);
+        } else {
+            rentCost = this.calculateDefaultRentalCost(car.year);
+        }
+
+        return {
+            ...car.toObject(),
+            rentCost
+        };
+    }
 
 	async rentCar(dto: CreateRentalDto): Promise<CarDocument | null> {
 		try {
@@ -60,7 +81,7 @@ export class CarsService implements ICarsService {
 	
 			return car;
 		} catch (error) {
-			throw new Error(`Failed to rent car`);
+			throw new Error('Failed to rent car');
 		}
 	}
 

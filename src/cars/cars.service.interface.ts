@@ -4,6 +4,7 @@ import { CarDocument, ICar } from './cars.entity';
 
 export interface ICarsService {
 	getAvailableCars(userId?: string): Promise<CarWithRentCost[]>;
+	getCarById(carId: string, userId?: string): Promise<CarWithRentCost>;
 	rentCar(dto: CreateRentalDto): Promise<CarDocument | null>;
 	returnCar(dto: ReturnCarDto): Promise<RentalDocument | null>;
 }

@@ -12,6 +12,7 @@ export interface IRental {
 	expectedRentalCost: number;
 	discount: number;
 	penalty?: number;
+	carId: string;
 	finalRentalCost: number;
 	status: 'active' | 'returned';
 }

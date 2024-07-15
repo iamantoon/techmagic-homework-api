@@ -1,12 +1,10 @@
 import { ICarsRepository } from './cars.repository.interface';
-import { MongoService } from '../database/mongo.service';
 import { CarDocument, CarModel } from './cars.entity';
-import { injectable, inject } from 'inversify';
-import { TYPES } from '../types';
+import { injectable } from 'inversify';
 
 @injectable()
 export class CarsRepository implements ICarsRepository {
-	constructor(@inject(TYPES.MongoService) private mongoService: MongoService) {}
+	constructor() {}
 
 	async getAvailableCars(): Promise<CarDocument[]> {
 		return await CarModel.find({ available: true }).exec();
