@@ -6,6 +6,7 @@ import { CreateRentalDto, ReturnCarDto } from './DTOs/car.dto';
 import { IAuthService } from '../auth/auth.service.interface';
 import { CarDocument, CarModel } from './cars.entity';
 import { TYPES } from '../types';
+import { HTTPError } from '../errors/http-error.class';
 
 @injectable()
 export class CarsService implements ICarsService {
@@ -32,30 +33,42 @@ export class CarsService implements ICarsService {
 		}
 	}
 
-	async getCarById(carId: string, userId?: string): Promise<CarWithRentCost> {
-        const car = await this.carsRepository.getCarById(carId);
-        if (!car) {
-            throw new Error('Car not found');
-        }
+	async getCarById(carId: string, userId?: string): Promise<CarWithRentCost | null> {
+		try {
+			const car = await this.carsRepository.getCarById(carId);
+			if (!car) throw new Error('Car not found');
 
-        let rentCost;
-        if (userId) {
-            const discount = await this.calculateDiscount(userId);
-            rentCost = this.calculateDiscountedRentalCost(car.year, discount);
-        } else {
-            rentCost = this.calculateDefaultRentalCost(car.year);
-        }
+			let rentCost;
+			let discount;
+			if (userId) {
+				discount = await this.calculateDiscount(userId);
+				rentCost = this.calculateDiscountedRentalCost(car.year, discount);
+			} else {
+				rentCost = this.calculateDefaultRentalCost(car.year);
+			}
 
-        return {
-            ...car.toObject(),
-            rentCost
-        };
-    }
+			discount = discount ? discount : 0;
+
+			return {
+				...car.toObject(),
+				discount,
+				rentCost
+			};
+		} catch (error) {
+			// throw new Error('Failed to get car by ID');
+			return null;
+		}
+	}
 
 	async rentCar(dto: CreateRentalDto): Promise<CarDocument | null> {
 		try {
 			const car = await CarModel.findById(dto.carId);
 			if (!car || !car.available) throw new Error('Car is not available');
+
+			let today = new Date();
+			let tomorrow = new Date(today);
+			tomorrow.setDate(today.getDate() + 1);
+			if (new Date(dto.expectedReturnDate).getDate() < tomorrow.getDate()) throw new Error('Invalid date');
 	
 			const rentalCost = this.calculateRentalCost(dto.expectedReturnDate, new Date(), car.year);
 			const discount = await this.calculateDiscount(dto.userId);

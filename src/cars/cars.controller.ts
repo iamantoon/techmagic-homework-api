@@ -12,6 +12,12 @@ import { IConfigService } from '../config/config.service.interface';
 import { IAuthRepository } from '../auth/auth.repository.interface';
 import { AuthMiddleware } from '../common/auth.middleware';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Cars
+ *   description: Car operations
+ */
 @injectable()
 export class CarsController extends BaseController implements ICarsController {
 	constructor(
@@ -24,13 +30,13 @@ export class CarsController extends BaseController implements ICarsController {
 			{ path: '/', method: 'get', func: this.getAvailableCars },
 			{ path: '/:id', method: 'get', func: this.getCar },
 			{
-				path: '/:carId/rent',
+				path: '/:id/rent',
 				method: 'post',
 				func: this.rentCar,
 				middlewares: [new ValidateMiddleware(CreateRentalDto), new AuthMiddleware(this.configService.get('SECRET'))],
 			},
 			{
-				path: '/return',
+				path: '/:id/return',
 				method: 'post',
 				func: this.returnCar,
 				middlewares: [new ValidateMiddleware(ReturnCarDto), new AuthMiddleware(this.configService.get('SECRET'))],
@@ -108,39 +114,55 @@ export class CarsController extends BaseController implements ICarsController {
 	 *         description: Internal server error
 	 */
 	async getCar(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const carId = req.params.id;
-            const token = req.headers['authorization']?.split(' ')[1];
-            
-            if (!token) {
-                const car = await this.carsService.getCarById(carId);
-                res.status(200).json(car);
-            } else {
-                jwt.verify(token, this.configService.get('SECRET'), async (err, decoded) => {
-                    if (err) return res.status(401).json({ message: 'Failed to authenticate token' });
-
-                    const userPhone = (decoded as any).phone;
-                    const user = await this.authRepository.findByPhone(userPhone);
-                    if (!user) return res.status(401).json({ message: 'User not found' });
-
-                    const car = await this.carsService.getCarById(carId);
-                    res.status(200).json(car);
-                });
-            }
-        } catch (error) {
-            next(new HTTPError(500, 'Failed to get car', 'getCar'));
-        }
-    }
+		try {
+			const carId = req.params.id;
+			const token = req.headers['authorization']?.split(' ')[1];
+	
+			if (!token) {
+				const car = await this.carsService.getCarById(carId);
+				if (!car) {
+					res.status(404).json({ message: 'Car not found' });
+					return;
+				}
+				res.status(200).json(car);
+				return;
+			} else {
+				jwt.verify(token, this.configService.get('SECRET'), async (err, decoded) => {
+					if (err) {
+						res.status(401).json({ message: 'Failed to authenticate token' });
+						return;
+					}
+	
+					const userPhone = (decoded as any).phone;
+					const user = await this.authRepository.findByPhone(userPhone);
+					if (!user) {
+						res.status(401).json({ message: 'User not found' });
+						return;
+					}
+	
+					const car = await this.carsService.getCarById(carId, user.id);
+					if (!car) {
+						res.status(404).json({ message: 'Car not found' });
+						return;
+					}
+					res.status(200).json(car);
+					return;
+				});
+			}
+		} catch (error) {
+			next(new HTTPError(500, 'Failed to get car', 'getCar'));
+		}
+	}		
 
 	/**
 	 * @swagger
-	 * /cars/{carId}/rent:
+	 * /cars/{id}/rent:
 	 *   post:
 	 *     summary: Rent a car
 	 *     tags: [Cars]
 	 *     parameters:
 	 *       - in: path
-	 *         name: carId
+	 *         name: id
 	 *         schema:
 	 *           type: string
 	 *         required: true
@@ -174,30 +196,37 @@ export class CarsController extends BaseController implements ICarsController {
 	}
 
 	/**
-	 * @swagger
-	 * /cars/return:
-	 *   post:
-	 *     summary: Return a car
-	 *     tags: [Cars]
-	 *     requestBody:
-	 *       required: true
-	 *       content:
-	 *         application/json:
-	 *           schema:
-	 *             $ref: '#/components/schemas/ReturnCarDto'
-	 *     responses:
-	 *       200:
-	 *         description: Car returned successfully
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               properties:
-	 *                 message:
-	 *                   type: string
-	 *       500:
-	 *         description: Internal server error
-	 */
+ * @swagger
+ * /cars/{id}/return:
+ *   post:
+ *     summary: Return a car
+ *     tags: [Cars]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The car ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ReturnCarDto'
+ *     responses:
+ *       200:
+ *         description: Car returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ */
 	async returnCar(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			await this.carsService.returnCar(req.body);

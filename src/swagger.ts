@@ -51,24 +51,24 @@ const swaggerDefinition = {
         properties: {
           carId: {
             type: 'string',
-            description: 'Car ID',},
-            userId: {
-              type: 'string',
-              description: 'User ID',
-            },
-            startDate: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Start date of the rental',
-            },
-            endDate: {
-              type: 'string',
-              format: 'date-time',
-              description: 'End date of the rental',
-            },
+            description: 'Car ID',
           },
-          required: ['carId', 'userId', 'startDate', 'endDate'],
-      },
+          userId: {
+            type: 'string',
+            description: 'User ID',
+          },
+          startDate: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Start date of the rental',
+          },
+          endDate: {
+            type: 'string',
+            format: 'date-time',
+            description: 'End date of the rental',
+          },
+        },
+        required: ['carId', 'userId', 'startDate', 'endDate'],
       },
       ReturnCarDto: {
         type: 'object',
@@ -84,13 +84,86 @@ const swaggerDefinition = {
           },
         },
         required: ['rentalId', 'returnDate'],
-    }
-  }
+      },
+      LoginDto: {
+        type: 'object',
+        properties: {
+          phone: {
+            type: 'string',
+            description: 'Phone number of the user',
+          },
+          password: {
+            type: 'string',
+            description: 'Password of the user',
+          },
+        },
+        required: ['phone', 'password'],
+      },
+      RegisterDto: {
+        type: 'object',
+        properties: {
+          phone: {
+            type: 'string',
+            description: 'Phone number of the user',
+          },
+          password: {
+            type: 'string',
+            description: 'Password of the user',
+          },
+          firstName: {
+            type: 'string',
+            description: 'First name of the user',
+          },
+          lastName: {
+            type: 'string',
+            description: 'Last name of the user',
+          },
+        },
+        required: ['phone', 'password', 'firstName', 'lastName'],
+      },
+      Rental: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            description: 'Rental ID',
+          },
+          carId: {
+            type: 'string',
+            description: 'Car ID',
+          },
+          userId: {
+            type: 'string',
+            description: 'User ID',
+          },
+          startDate: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Start date of the rental',
+          },
+          endDate: {
+            type: 'string',
+            format: 'date-time',
+            description: 'End date of the rental',
+          },
+          returnDate: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Return date of the rental',
+          },
+          status: {
+            type: 'string',
+            description: 'Status of the rental',
+          },
+        },
+      },
+    },
+  },
 };
 
 const options = {
   swaggerDefinition,
-  apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
+  apis: ['./src/auth/*.ts', './src/cars/*.ts', './src/rental/*.ts'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

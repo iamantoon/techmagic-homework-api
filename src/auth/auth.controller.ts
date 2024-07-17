@@ -12,7 +12,14 @@ import { sign } from 'jsonwebtoken';
 import { TYPES } from '../types';
 import 'reflect-metadata';
 
+
 @injectable()
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication operations
+ */
 export class AuthController extends BaseController implements IAuthController {
 	constructor(
 		@inject(TYPES.AuthService) private authService: AuthService,
@@ -25,6 +32,39 @@ export class AuthController extends BaseController implements IAuthController {
 		]);
 	}
 
+	/**
+	 * @swagger
+	 * /auth/login:
+	 *   post:
+	 *     summary: Login a user
+	 *     tags: [Auth]
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             $ref: '#/components/schemas/LoginDto'
+	 *     responses:
+	 *       200:
+	 *         description: Successfully logged in
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 id:
+	 *                   type: string
+	 *                 firstName:
+	 *                   type: string
+	 *                 lastName:
+	 *                   type: string
+	 *                 jwt:
+	 *                   type: string
+	 *       401:
+	 *         description: Unauthorized
+	 *       500:
+	 *         description: Internal server error
+	 */
 	async login(req: Request<{}, {}, LoginDto>, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const user = await this.authService.validateUser(req.body);
@@ -43,6 +83,35 @@ export class AuthController extends BaseController implements IAuthController {
 		}
 	}
 
+	/**
+	 * @swagger
+	 * /auth/register:
+	 *   post:
+	 *     summary: Register a new user
+	 *     tags: [Auth]
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             $ref: '#/components/schemas/RegisterDto'
+	 *     responses:
+	 *       200:
+	 *         description: Successfully registered
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 result:
+	 *                   type: object
+	 *                 jwt:
+	 *                   type: string
+	 *       422:
+	 *         description: User already exists
+	 *       500:
+	 *         description: Internal server error
+	 */
 	async register(req: Request<{}, {}, RegisterDto>, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const result = await this.authService.createUser(req.body);

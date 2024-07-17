@@ -11,12 +11,18 @@ import { ConfigService } from '../config/config.service';
 import { AuthRepository } from '../auth/auth.repository';
 import jwt from 'jsonwebtoken';
 
+/**
+ * @swagger
+ * tags:
+ *   name: Rentals
+ *   description: Active and returned rentals
+ */
 @injectable()
 export class RentalController extends BaseController implements IRentalController {
 	constructor(
 		@inject(TYPES.RentalService) private rentalService: RentalService,
 		@inject(TYPES.ConfigService) private configService: ConfigService,
-		@inject(TYPES.AuthRepository) private authRepository: AuthRepository,
+		@inject(TYPES.AuthRepository) private authRepository: AuthRepository
 	) {
 		super();
 		this.bindRoutes([
@@ -35,6 +41,28 @@ export class RentalController extends BaseController implements IRentalControlle
 		]);
 	}
 
+	/**
+	 * @swagger
+	 * /rentals:
+	 *   get:
+	 *     summary: Get rental history
+	 *     tags: [Rentals]
+	 *     security:
+	 *       - bearerAuth: []
+	 *     responses:
+	 *       200:
+	 *         description: List of rental history
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: array
+	 *               items:
+	 *                 $ref: '#/components/schemas/Rental'
+	 *       401:
+	 *         description: Unauthorized
+	 *       500:
+	 *         description: Internal server error
+	 */
 	async getRentalHistory(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const token = req.headers['authorization']?.split(' ')[1];
@@ -59,6 +87,28 @@ export class RentalController extends BaseController implements IRentalControlle
 		}
 	}
 
+	/**
+	 * @swagger
+	 * /rentals/active:
+	 *   get:
+	 *     summary: Get active rentals
+	 *     tags: [Rentals]
+	 *     security:
+	 *       - bearerAuth: []
+	 *     responses:
+	 *       200:
+	 *         description: List of active rentals
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: array
+	 *               items:
+	 *                 $ref: '#/components/schemas/Rental'
+	 *       401:
+	 *         description: Unauthorized
+	 *       500:
+	 *         description: Internal server error
+	 */
 	async getActiveRentals(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const token = req.headers['authorization']?.split(' ')[1];
