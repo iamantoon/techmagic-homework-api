@@ -120,7 +120,8 @@ export class AuthController extends BaseController implements IAuthController {
 				return;
 			}
 			const jwt = await this.signJWT(req.body.phone, this.configService.get('SECRET'));
-			this.ok(res, { result, jwt });
+			const { _id, firstName, lastName } = result;
+			this.ok(res, { id: _id, firstName, lastName, jwt });
 		} catch (error) {
 			if (!res.headersSent) {
 				next(new HTTPError(500, 'Internal Server Error', 'register'));
