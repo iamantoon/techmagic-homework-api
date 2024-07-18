@@ -28,7 +28,7 @@ export class RentalService implements IRentalService {
 		const rentals = await this.rentalRepository.getUserRentals(userId);
 
 		const returnedRentals = rentals.filter(rental => rental.status === 'returned');
-		
+
 		const returnedRentalDetails = await Promise.all(returnedRentals.map(async (rental) => {
 			const car = await this.carsRepository.getCarById(rental.car as string);
 			if (car) {
@@ -37,7 +37,6 @@ export class RentalService implements IRentalService {
 					startDate: rental.startDate,
 					expectedReturnDate: rental.expectedReturnDate,
 					actualReturnDate: rental.actualReturnDate,
-					rentalCost: rental.rentalCost,
 					expectedRentalCost: rental.expectedRentalCost,
 					discount: rental.discount,
 					penalty: rental.penalty,
@@ -70,7 +69,6 @@ export class RentalService implements IRentalService {
 					startDate: rental.startDate,
 					expectedReturnDate: rental.expectedReturnDate,
 					actualReturnDate: rental.actualReturnDate,
-					rentalCost: rental.rentalCost,
 					expectedRentalCost: rental.expectedRentalCost,
 					discount: rental.discount,
 					penalty: rental.penalty,

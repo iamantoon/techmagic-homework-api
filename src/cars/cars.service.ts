@@ -3,17 +3,12 @@ import { CarWithRentCost, ICarsService } from './cars.service.interface';
 import { RentalDocument, RentalModel } from '../rental/rental.entity';
 import { ICarsRepository } from './cars.repository.interface';
 import { CreateRentalDto, ReturnCarDto } from './DTOs/car.dto';
-import { IAuthService } from '../auth/auth.service.interface';
 import { CarDocument, CarModel } from './cars.entity';
 import { TYPES } from '../types';
-import { HTTPError } from '../errors/http-error.class';
 
 @injectable()
 export class CarsService implements ICarsService {
-	constructor(
-		@inject(TYPES.CarsRepository) private carsRepository: ICarsRepository,
-		@inject(TYPES.AuthService) private authService: IAuthService,
-	) {}
+	constructor(@inject(TYPES.CarsRepository) private carsRepository: ICarsRepository) {}
 
 	async getAvailableCars(userId?: string): Promise<CarWithRentCost[]> {
 		const cars = await CarModel.find({ available: true }).exec();
@@ -55,31 +50,28 @@ export class CarsService implements ICarsService {
 				rentCost
 			};
 		} catch (error) {
-			// throw new Error('Failed to get car by ID');
 			return null;
 		}
 	}
 
-	async rentCar(dto: CreateRentalDto): Promise<CarDocument | null> {
+	async rentCar(carId: string, dto: CreateRentalDto): Promise<CarDocument | null> {
 		try {
-			const car = await CarModel.findById(dto.carId);
+			const car = await CarModel.findById(carId);
 			if (!car || !car.available) throw new Error('Car is not available');
-
+	
 			let today = new Date();
 			let tomorrow = new Date(today);
 			tomorrow.setDate(today.getDate() + 1);
 			if (new Date(dto.expectedReturnDate).getDate() < tomorrow.getDate()) throw new Error('Invalid date');
 	
-			const rentalCost = this.calculateRentalCost(dto.expectedReturnDate, new Date(), car.year);
+			const expectedRentalCost = await this.calculateRentalCost(dto.expectedReturnDate, new Date(), car.year, dto.userId);
 			const discount = await this.calculateDiscount(dto.userId);
-			const expectedRentalCost = rentalCost - discount;
 	
 			const rental = new RentalModel({
-				car: dto.carId,
+				car: carId,
 				user: dto.userId,
 				startDate: new Date(),
 				expectedReturnDate: dto.expectedReturnDate,
-				rentalCost,
 				expectedRentalCost,
 				discount,
 				penalty: 0,
@@ -88,7 +80,7 @@ export class CarsService implements ICarsService {
 			});
 	
 			await rental.save();
-			
+	
 			car.available = false;
 			await car.save();
 	
@@ -108,6 +100,7 @@ export class CarsService implements ICarsService {
 		const penalty = this.calculatePenalty(rental.expectedReturnDate, actualReturnDate, dto.isDamaged);
 
 		rental.actualReturnDate = actualReturnDate;
+		rental.finalRentalCost = rental.expectedRentalCost + penalty;
 		rental.penalty = penalty;
 		rental.status = 'returned';
 		await rental.save();
@@ -134,11 +127,13 @@ export class CarsService implements ICarsService {
 		const ageFactor = (new Date().getFullYear() - year) * 0.05;
 		return baseRate + baseRate * ageFactor;
 	}
-
-	private calculateRentalCost(expectedReturnDate: Date, startDate: Date, year: number): number {
-		const durationInDays = (new Date(expectedReturnDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24);
+	
+	private async calculateRentalCost(expectedReturnDate: Date, startDate: Date, year: number, userId: string): Promise<number> {
+		const durationInDays = Math.ceil((new Date(expectedReturnDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
 		const dailyRate = this.calculateDefaultRentalCost(year);
-		return Math.ceil(durationInDays) * dailyRate;
+		const discount = await this.calculateDiscount(userId);
+		const discountedDailyRate = dailyRate - discount;
+		return durationInDays * discountedDailyRate;
 	}
 
 	private calculatePenalty(expectedReturnDate: Date, actualReturnDate: Date, isDamaged: boolean): number {

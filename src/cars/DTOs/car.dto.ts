@@ -1,5 +1,4 @@
 export class CreateRentalDto {
-	carId: string;
 	userId: string;
 	expectedReturnDate: Date;
 }

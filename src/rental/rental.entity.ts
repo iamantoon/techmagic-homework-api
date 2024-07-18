@@ -8,12 +8,11 @@ export interface IRental {
 	startDate: Date;
 	expectedReturnDate: Date;
 	actualReturnDate?: Date;
-	rentalCost: number;
 	expectedRentalCost: number;
-	discount: number;
-	penalty?: number;
-	carId: string;
 	finalRentalCost: number;
+	discount: number;
+	penalty: number;
+	carId: string;
 	status: 'active' | 'returned';
 }
 
@@ -25,7 +24,6 @@ const rentalSchema = new Schema<RentalDocument>({
 	startDate: { type: Date, required: true, default: Date.now },
 	expectedReturnDate: { type: Date, required: true },
 	actualReturnDate: { type: Date },
-	rentalCost: { type: Number, required: true },
 	expectedRentalCost: { type: Number, required: true },
 	discount: { type: Number, default: 0 },
 	penalty: { type: Number, default: 0 },

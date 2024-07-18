@@ -188,7 +188,8 @@ export class CarsController extends BaseController implements ICarsController {
 	 */
 	async rentCar(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
-			await this.carsService.rentCar(req.body);
+			const carId = req.params.id;
+			await this.carsService.rentCar(carId, req.body);
 			this.ok(res, { message: 'Car rented successfully' });
 		} catch (error) {
 			next(new HTTPError(500, 'Failed to rent car', 'rentCar'));
