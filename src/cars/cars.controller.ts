@@ -3,7 +3,7 @@ import { BaseController } from '../common/base.controller';
 import { ICarsController } from './cars.controller.interface';
 import { Request, Response, NextFunction } from 'express';
 import { ValidateMiddleware } from '../common/validate.middleware';
-import { CreateRentalDto, ReturnCarDto } from './DTOs/car.dto';
+import { CreateRentalDto, ReturnCarDto } from './cars.dto';
 import { HTTPError } from '../errors/http-error.class';
 import { TYPES } from '../types';
 import jwt from 'jsonwebtoken';

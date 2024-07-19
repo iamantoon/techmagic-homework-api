@@ -1,4 +1,4 @@
-import { CreateRentalDto, ReturnCarDto } from './DTOs/car.dto';
+import { CreateRentalDto, ReturnCarDto } from './cars.dto';
 import { RentalDocument } from '../rental/rental.entity';
 import { CarDocument, ICar } from './cars.entity';
 

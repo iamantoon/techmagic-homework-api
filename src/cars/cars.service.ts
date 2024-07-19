@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { CarWithRentCost, ICarsService } from './cars.service.interface';
 import { RentalDocument, RentalModel } from '../rental/rental.entity';
 import { ICarsRepository } from './cars.repository.interface';
-import { CreateRentalDto, ReturnCarDto } from './DTOs/car.dto';
+import { CreateRentalDto, ReturnCarDto } from './cars.dto';
 import { CarDocument, CarModel } from './cars.entity';
 import { TYPES } from '../types';
 
