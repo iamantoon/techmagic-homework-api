@@ -76,7 +76,6 @@ export class AuthController extends BaseController implements IAuthController {
 			const { _id, firstName, lastName } = user;
 			this.ok(res, { id: _id, firstName, lastName, jwt });
 		} catch (error) {
-			console.error('Error in login() catch block [auth.controller]: ', error);
 			if (!res.headersSent) {
 				next(new HTTPError(500, 'Internal Server Error', 'login'));
 			}

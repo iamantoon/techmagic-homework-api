@@ -155,37 +155,39 @@ export class CarsController extends BaseController implements ICarsController {
 	}		
 
 	/**
-	 * @swagger
-	 * /cars/{id}/rent:
-	 *   post:
-	 *     summary: Rent a car
-	 *     tags: [Cars]
-	 *     parameters:
-	 *       - in: path
-	 *         name: id
-	 *         schema:
-	 *           type: string
-	 *         required: true
-	 *         description: The car ID
-	 *     requestBody:
-	 *       required: true
-	 *       content:
-	 *         application/json:
-	 *           schema:
-	 *             $ref: '#/components/schemas/CreateRentalDto'
-	 *     responses:
-	 *       200:
-	 *         description: Car rented successfully
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               properties:
-	 *                 message:
-	 *                   type: string
-	 *       500:
-	 *         description: Internal server error
-	 */
+ * @swagger
+ * /cars/{id}/rent:
+ *   post:
+ *     summary: Rent a car
+ *     tags: [Cars]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The car ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateRentalDto'
+ *     responses:
+ *       200:
+ *         description: Car rented successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ */
 	async rentCar(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const carId = req.params.id;
@@ -202,6 +204,8 @@ export class CarsController extends BaseController implements ICarsController {
  *   post:
  *     summary: Return a car
  *     tags: [Cars]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

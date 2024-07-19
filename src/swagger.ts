@@ -44,31 +44,26 @@ const swaggerDefinition = {
             type: 'boolean',
             description: 'Availability status of the car',
           },
+          photoUrl: {
+            type: 'string',
+            description: 'Photo of the car'
+          }
         },
       },
       CreateRentalDto: {
         type: 'object',
         properties: {
-          carId: {
-            type: 'string',
-            description: 'Car ID',
-          },
           userId: {
             type: 'string',
             description: 'User ID',
           },
-          startDate: {
+          expectedReturnDate: {
             type: 'string',
             format: 'date-time',
-            description: 'Start date of the rental',
-          },
-          endDate: {
-            type: 'string',
-            format: 'date-time',
-            description: 'End date of the rental',
+            description: 'Expected end date of the rental',
           },
         },
-        required: ['carId', 'userId', 'startDate', 'endDate'],
+        required: ['userId', 'expectedReturnDate'],
       },
       ReturnCarDto: {
         type: 'object',
@@ -77,20 +72,19 @@ const swaggerDefinition = {
             type: 'string',
             description: 'Rental ID',
           },
-          returnDate: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Return date of the car',
+          isDamaged: {
+            type: 'boolean',
+            description: 'Has the car been damaged?',
           },
         },
-        required: ['rentalId', 'returnDate'],
+        required: ['rentalId', 'isDamaged'],
       },
       LoginDto: {
         type: 'object',
         properties: {
           phone: {
             type: 'string',
-            description: 'Phone number of the user',
+            description: 'Phone number of the user (Ukrainian numbers available only)',
           },
           password: {
             type: 'string',
@@ -102,14 +96,6 @@ const swaggerDefinition = {
       RegisterDto: {
         type: 'object',
         properties: {
-          phone: {
-            type: 'string',
-            description: 'Phone number of the user',
-          },
-          password: {
-            type: 'string',
-            description: 'Password of the user',
-          },
           firstName: {
             type: 'string',
             description: 'First name of the user',
@@ -118,8 +104,32 @@ const swaggerDefinition = {
             type: 'string',
             description: 'Last name of the user',
           },
+          patronymic: {
+            type: 'string',
+            description: 'Patronymic of the user',
+          },
+          country: {
+            type: 'string',
+            description: 'Country of the user'
+          },
+          city: {
+            type: 'string',
+            description: 'City of the user'
+          },
+          address: {
+            type: 'string',
+            description: 'Address of the user'
+          },
+          phone: {
+            type: 'string',
+            description: 'Phone number of the user',
+          },
+          password: {
+            type: 'string',
+            description: 'Password of the user',
+          },
         },
-        required: ['phone', 'password', 'firstName', 'lastName'],
+        required: ['firstName', 'lastName', 'patronymic', 'country', 'city', 'address', 'phone', 'password', ],
       },
       Rental: {
         type: 'object',
@@ -141,15 +151,25 @@ const swaggerDefinition = {
             format: 'date-time',
             description: 'Start date of the rental',
           },
-          endDate: {
+          expectedReturnDate: {
             type: 'string',
             format: 'date-time',
-            description: 'End date of the rental',
+            description: 'Expected return date of the rental',
           },
-          returnDate: {
+          actualReturnDate: {
             type: 'string',
             format: 'date-time',
-            description: 'Return date of the rental',
+            description: 'Actual end date of the rental',
+          },
+          expectedRentalCost: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Expected rental cost of the rental',
+          },
+          actualRentalCost: {
+            type: 'string',
+            format: 'date-time',
+            description: 'Actual rental cost of the rental',
           },
           status: {
             type: 'string',
