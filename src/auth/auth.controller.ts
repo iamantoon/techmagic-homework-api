@@ -11,6 +11,8 @@ import { LoginDto } from './DTOs/login.dto';
 import { sign } from 'jsonwebtoken';
 import { TYPES } from '../types';
 import 'reflect-metadata';
+import { UserProfileDto } from './DTOs/user.dto';
+import { AuthMiddleware } from '../common/auth.middleware';
 
 
 @injectable()
@@ -29,6 +31,7 @@ export class AuthController extends BaseController implements IAuthController {
 		this.bindRoutes([
 			{ path: '/login', method: 'post', func: this.login, middlewares: [new ValidateMiddleware(LoginDto)] },
 			{ path: '/register', method: 'post', func: this.register, middlewares: [new ValidateMiddleware(RegisterDto)] },
+			{ path: '/account/:id', method: 'get', func: this.getUserProfile, middlewares: [new AuthMiddleware(this.configService.get('SECRET'))] }
 		]);
 	}
 
@@ -125,6 +128,44 @@ export class AuthController extends BaseController implements IAuthController {
 			if (!res.headersSent) {
 				next(new HTTPError(500, 'Internal Server Error', 'register'));
 			}
+		}
+	}
+
+	/**
+ * @swagger
+ * /auth/profile:
+ *   get:
+ *     summary: Get the profile of the logged-in user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 totalRents:
+ *                   type: number
+ *                 activeRents:
+ *                   type: number
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ */
+
+	async getUserProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+		try {
+			const userId = req.params.id;
+			const userProfile: UserProfileDto = await this.authService.getUserProfile(userId);
+			res.status(200).json(userProfile);
+		} catch (error) {
+			next(error);
 		}
 	}
 
