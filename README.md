@@ -2,7 +2,7 @@
 
 ## Installation
 
-1. **Download or clone the repository:**
+1. **Download zip or clone the repository:**
 
    ```sh
    git clone <repository-url>
