@@ -46,3 +46,7 @@
 2. **View Swagger documentation:**
 
    Navigate to [http://localhost:5000/api-docs/](http://localhost:5000/api-docs/) to view the Swagger documentation for the API.
+
+## Additional Notes
+
+Ensure your MongoDB database is accessible and the URI in your .env file is correct.
