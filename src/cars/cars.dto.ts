@@ -1,14 +1,14 @@
 import { IsDateString, IsString, IsBoolean } from 'class-validator';
 
 export class CreateRentalDto {
-    @IsDateString()
-    expectedReturnDate: Date;
+	@IsDateString()
+	expectedReturnDate: Date;
 }
 
 export class ReturnCarDto {
-    @IsString()
-    rentalId: string;
+	@IsString()
+	rentalId: string;
 
-    @IsBoolean()
-    isDamaged: boolean;
+	@IsBoolean()
+	isDamaged: boolean;
 }

@@ -33,11 +33,16 @@ export class AuthController extends BaseController implements IAuthController {
 		this.bindRoutes([
 			{ path: '/login', method: 'post', func: this.login, middlewares: [new ValidateMiddleware(LoginDto)] },
 			{ path: '/register', method: 'post', func: this.register, middlewares: [new ValidateMiddleware(RegisterDto)] },
-			{ path: '/account', method: 'get', func: this.getUserProfile, middlewares: [new AuthMiddleware(this.configService.get('SECRET'))] }
+			{
+				path: '/account',
+				method: 'get',
+				func: this.getUserProfile,
+				middlewares: [new AuthMiddleware(this.configService.get('SECRET'))],
+			},
 		]);
 	}
 
-		/**
+	/**
 	 * @swagger
 	 * /auth/login:
 	 *   post:
@@ -87,7 +92,7 @@ export class AuthController extends BaseController implements IAuthController {
 		}
 	}
 
-		/**
+	/**
 	 * @swagger
 	 * /auth/register:
 	 *   post:
@@ -189,7 +194,7 @@ export class AuthController extends BaseController implements IAuthController {
 
 					const userProfile: UserProfileDto = await this.authService.getUserProfile(userId);
 					res.status(200).json(userProfile);
-				})
+				});
 			}
 		} catch (error) {
 			next(error);

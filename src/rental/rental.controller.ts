@@ -22,7 +22,7 @@ export class RentalController extends BaseController implements IRentalControlle
 	constructor(
 		@inject(TYPES.RentalService) private rentalService: RentalService,
 		@inject(TYPES.ConfigService) private configService: ConfigService,
-		@inject(TYPES.AuthRepository) private authRepository: AuthRepository
+		@inject(TYPES.AuthRepository) private authRepository: AuthRepository,
 	) {
 		super();
 		this.bindRoutes([
@@ -37,7 +37,7 @@ export class RentalController extends BaseController implements IRentalControlle
 				method: 'get',
 				func: this.getActiveRentals,
 				middlewares: [new AuthGuard()],
-			}
+			},
 		]);
 	}
 

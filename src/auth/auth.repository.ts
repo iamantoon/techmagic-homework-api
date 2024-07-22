@@ -24,16 +24,16 @@ export class AuthRepository implements IAuthRepository {
 		const closedRents = await RentalModel.countDocuments({ user: userId, status: 'returned' }).exec();
 		const activeRents = await RentalModel.countDocuments({ user: userId, status: 'active' }).exec();
 		const lastRents = await RentalModel.find({ user: userId, status: 'returned' })
-							.sort({ actualReturnDate: -1 })
-							.limit(3)
-							.populate('car', 'brand carModel')
-							.exec();
+			.sort({ actualReturnDate: -1 })
+			.limit(3)
+			.populate('car', 'brand carModel')
+			.exec();
 
 		return {
 			user,
 			closedRents,
 			activeRents,
-			lastRents
+			lastRents,
 		};
 	}
 }

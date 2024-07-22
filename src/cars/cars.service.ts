@@ -18,7 +18,7 @@ export class CarsService implements ICarsService {
 			return cars.map((car) => ({
 				...car.toObject(),
 				rentCost: this.calculateDiscountedRentalCost(car.year, discount),
-				discount: discount
+				discount: discount,
 			}));
 		} else {
 			return cars.map((car) => ({
@@ -47,7 +47,7 @@ export class CarsService implements ICarsService {
 			return {
 				...car.toObject(),
 				discount,
-				rentCost
+				rentCost,
 			};
 		} catch (error) {
 			return null;
@@ -58,8 +58,8 @@ export class CarsService implements ICarsService {
 		const car = await CarModel.findById(carId);
 		if (!car || !car.available) throw new Error('Car is not available');
 
-		let today = new Date();
-		let tomorrow = new Date(today);
+		const today = new Date();
+		const tomorrow = new Date(today);
 		tomorrow.setDate(today.getDate() + 1);
 		if (new Date(dto.expectedReturnDate).getDate() < tomorrow.getDate()) throw new Error('Invalid date');
 
@@ -123,9 +123,16 @@ export class CarsService implements ICarsService {
 		const ageFactor = (new Date().getFullYear() - year) * 0.05;
 		return baseRate + baseRate * ageFactor;
 	}
-	
-	private async calculateRentalCost(expectedReturnDate: Date, startDate: Date, year: number, userId: string): Promise<number> {
-		const durationInDays = Math.ceil((new Date(expectedReturnDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
+
+	private async calculateRentalCost(
+		expectedReturnDate: Date,
+		startDate: Date,
+		year: number,
+		userId: string,
+	): Promise<number> {
+		const durationInDays = Math.ceil(
+			(new Date(expectedReturnDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24),
+		);
 		const dailyRate = this.calculateDefaultRentalCost(year);
 		const discount = await this.calculateDiscount(userId);
 		const discountedDailyRate = dailyRate - discount;

@@ -9,7 +9,7 @@ import { ICarsRepository } from '../cars/cars.repository.interface';
 export class RentalService implements IRentalService {
 	constructor(
 		@inject(TYPES.RentalRepository) private rentalRepository: IRentalRepository,
-		@inject(TYPES.CarsRepository) private carsRepository: ICarsRepository
+		@inject(TYPES.CarsRepository) private carsRepository: ICarsRepository,
 	) {}
 
 	async createRental(rentalData: Partial<RentalDocument>): Promise<RentalDocument> {
@@ -27,64 +27,68 @@ export class RentalService implements IRentalService {
 	async getUserRentalHistory(userId: string): Promise<any[]> {
 		const rentals = await this.rentalRepository.getUserRentals(userId);
 
-		const returnedRentals = rentals.filter(rental => rental.status === 'returned');
+		const returnedRentals = rentals.filter((rental) => rental.status === 'returned');
 
-		const returnedRentalDetails = await Promise.all(returnedRentals.map(async (rental) => {
-			const car = await this.carsRepository.getCarById(rental.car as string);
-			if (car) {
-				return {
-					_id: rental._id,
-					startDate: rental.startDate,
-					expectedReturnDate: rental.expectedReturnDate,
-					actualReturnDate: rental.actualReturnDate,
-					expectedRentalCost: rental.expectedRentalCost,
-					discount: rental.discount,
-					penalty: rental.penalty,
-					finalRentalCost: rental.finalRentalCost,
-					status: rental.status,
-					car: {
-						brand: car.brand,
-						carModel: car.carModel
-					},
-					user: rental.user
-				};
-			} else {
-				return rental;
-			}
-		}));
-		
+		const returnedRentalDetails = await Promise.all(
+			returnedRentals.map(async (rental) => {
+				const car = await this.carsRepository.getCarById(rental.car as string);
+				if (car) {
+					return {
+						_id: rental._id,
+						startDate: rental.startDate,
+						expectedReturnDate: rental.expectedReturnDate,
+						actualReturnDate: rental.actualReturnDate,
+						expectedRentalCost: rental.expectedRentalCost,
+						discount: rental.discount,
+						penalty: rental.penalty,
+						finalRentalCost: rental.finalRentalCost,
+						status: rental.status,
+						car: {
+							brand: car.brand,
+							carModel: car.carModel,
+						},
+						user: rental.user,
+					};
+				} else {
+					return rental;
+				}
+			}),
+		);
+
 		return returnedRentalDetails.reverse();
 	}
 
 	async getUserActiveRentals(userId: string): Promise<any[]> {
 		const rentals = await this.rentalRepository.getUserRentals(userId);
-		
-		const activeRentals = rentals.filter(rental => rental.status === 'active');
-		
-		const activeRentalDetails = await Promise.all(activeRentals.map(async (rental) => {
-			const car = await this.carsRepository.getCarById(rental.car as string);
-			if (car) {
-				return {
-					_id: rental._id,
-					startDate: rental.startDate,
-					expectedReturnDate: rental.expectedReturnDate,
-					actualReturnDate: rental.actualReturnDate,
-					expectedRentalCost: rental.expectedRentalCost,
-					discount: rental.discount,
-					penalty: rental.penalty,
-					finalRentalCost: rental.finalRentalCost,
-					status: rental.status,
-					car: {
-						brand: car.brand,
-						carModel: car.carModel
-					},
-					carId: car._id,
-					user: rental.user
-				};
-			} else {
-				return rental;
-			}
-		}));
+
+		const activeRentals = rentals.filter((rental) => rental.status === 'active');
+
+		const activeRentalDetails = await Promise.all(
+			activeRentals.map(async (rental) => {
+				const car = await this.carsRepository.getCarById(rental.car as string);
+				if (car) {
+					return {
+						_id: rental._id,
+						startDate: rental.startDate,
+						expectedReturnDate: rental.expectedReturnDate,
+						actualReturnDate: rental.actualReturnDate,
+						expectedRentalCost: rental.expectedRentalCost,
+						discount: rental.discount,
+						penalty: rental.penalty,
+						finalRentalCost: rental.finalRentalCost,
+						status: rental.status,
+						car: {
+							brand: car.brand,
+							carModel: car.carModel,
+						},
+						carId: car._id,
+						user: rental.user,
+					};
+				} else {
+					return rental;
+				}
+			}),
+		);
 
 		return activeRentalDetails;
 	}

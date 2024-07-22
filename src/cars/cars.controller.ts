@@ -115,7 +115,7 @@ export class CarsController extends BaseController implements ICarsController {
 		try {
 			const carId = req.params.id;
 			const token = req.headers['authorization']?.split(' ')[1];
-	
+
 			if (!token) {
 				const car = await this.carsService.getCarById(carId);
 				if (!car) {
@@ -130,14 +130,14 @@ export class CarsController extends BaseController implements ICarsController {
 						res.status(401).json({ message: 'Failed to authenticate token' });
 						return;
 					}
-	
+
 					const userPhone = (decoded as any).phone;
 					const user = await this.authRepository.findByPhone(userPhone);
 					if (!user) {
 						res.status(401).json({ message: 'User not found' });
 						return;
 					}
-	
+
 					const car = await this.carsService.getCarById(carId, user.id);
 					if (!car) {
 						res.status(404).json({ message: 'Car not found' });
@@ -150,9 +150,9 @@ export class CarsController extends BaseController implements ICarsController {
 		} catch (error) {
 			next(new HTTPError(500, 'Failed to get car', 'getCar'));
 		}
-	}		
+	}
 
-		/**
+	/**
 	 * @swagger
 	 * /cars/{id}/rent:
 	 *   post:
@@ -183,7 +183,7 @@ export class CarsController extends BaseController implements ICarsController {
 	 *               properties:
 	 *                 message:
 	 *                   type: string
-	 * 
+	 *
 	 *       401:
 	 *         description: Unauthorized
 	 *       400:
@@ -225,7 +225,7 @@ export class CarsController extends BaseController implements ICarsController {
 							return;
 						}
 					}
-					
+
 					this.ok(res, { message: 'Car rented successfully' });
 				});
 			}
@@ -234,7 +234,7 @@ export class CarsController extends BaseController implements ICarsController {
 		}
 	}
 
-		/**
+	/**
 	 * @swagger
 	 * /cars/{id}/return:
 	 *   post:
@@ -277,7 +277,7 @@ export class CarsController extends BaseController implements ICarsController {
 			const token = req.headers['authorization']?.split(' ')[1];
 
 			if (!token) {
-				res.status(401).json({message: 'Unauthorized'});
+				res.status(401).json({ message: 'Unauthorized' });
 				return;
 			} else {
 				jwt.verify(token, this.configService.get('SECRET'), async (err, decoded) => {
@@ -295,7 +295,7 @@ export class CarsController extends BaseController implements ICarsController {
 
 					try {
 						await this.carsService.returnCar(req.body);
-					} catch (error){
+					} catch (error) {
 						if (error instanceof HTTPError) {
 							res.status(400).json({ message: error.message });
 							return;
