@@ -37,7 +37,7 @@ export class CarsController extends BaseController implements ICarsController {
 			},
 			{
 				path: '/return',
-				method: 'post',
+				method: 'put',
 				func: this.returnCar,
 				middlewares: [new ValidateMiddleware(ReturnCarDto), new AuthMiddleware(this.configService.get('SECRET'))],
 			},
@@ -174,7 +174,7 @@ export class CarsController extends BaseController implements ICarsController {
 	 *           schema:
 	 *             $ref: '#/components/schemas/CreateRentalDto'
 	 *     responses:
-	 *       200:
+	 *       201:
 	 *         description: Car rented successfully
 	 *         content:
 	 *           application/json:
@@ -183,7 +183,8 @@ export class CarsController extends BaseController implements ICarsController {
 	 *               properties:
 	 *                 message:
 	 *                   type: string
-	 *
+	 *                 status:
+	 *                   type: string
 	 *       401:
 	 *         description: Unauthorized
 	 *       400:
@@ -216,6 +217,11 @@ export class CarsController extends BaseController implements ICarsController {
 					const userId = user.id;
 					try {
 						await this.carsService.rentCar(req.body, userId, carId);
+						res.status(201).json({
+							status: 'success',
+							message: 'Car rented successfully'
+						});
+						return;
 					} catch (error) {
 						if (error instanceof HTTPError) {
 							res.status(400).json({ message: error.message });
@@ -225,8 +231,6 @@ export class CarsController extends BaseController implements ICarsController {
 							return;
 						}
 					}
-
-					this.ok(res, { message: 'Car rented successfully' });
 				});
 			}
 		} catch (error) {
@@ -237,7 +241,7 @@ export class CarsController extends BaseController implements ICarsController {
 	/**
 	 * @swagger
 	 * /cars/return:
-	 *   post:
+	 *   put:
 	 *     summary: Return a car
 	 *     tags: [Cars]
 	 *     security:

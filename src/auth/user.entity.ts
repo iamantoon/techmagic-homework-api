@@ -23,7 +23,7 @@ const userSchema = new Schema<UserDocument>({
 	country: { type: String, required: true },
 	address: { type: String, required: true },
 	password: { type: String, required: true },
-});
+}, { versionKey: false });
 
 userSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
 	if (!password || !this.password) {

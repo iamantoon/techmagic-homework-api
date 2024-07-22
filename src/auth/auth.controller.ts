@@ -112,8 +112,12 @@ export class AuthController extends BaseController implements IAuthController {
 	 *             schema:
 	 *               type: object
 	 *               properties:
-	 *                 result:
-	 *                   type: object
+	 *                 id:
+	 *                   type: string
+	 *                 firstName:
+	 *                   type: string
+	 *                 lastName:
+	 *                   type: string
 	 *                 jwt:
 	 *                   type: string
 	 *       400:
@@ -140,7 +144,7 @@ export class AuthController extends BaseController implements IAuthController {
 
 	/**
 	 * @swagger
-	 * /auth/profile:
+	 * /auth/account:
 	 *   get:
 	 *     summary: Get the profile of the logged-in user
 	 *     tags: [Auth]
@@ -148,7 +152,7 @@ export class AuthController extends BaseController implements IAuthController {
 	 *       - bearerAuth: []
 	 *     responses:
 	 *       200:
-	 *         description: User profile data
+	 *         description: User account data
 	 *         content:
 	 *           application/json:
 	 *             schema:

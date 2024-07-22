@@ -22,6 +22,6 @@ const carSchema = new Schema<CarDocument>({
 	type: { type: String, required: true },
 	available: { type: Boolean, default: true },
 	photoUrl: { type: String, required: false },
-});
+}, { versionKey: false });
 
 export const CarModel = model<CarDocument>('Car', carSchema);

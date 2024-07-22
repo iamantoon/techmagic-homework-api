@@ -56,6 +56,10 @@ const swaggerDefinition = {
 						type: 'number',
 						description: 'Rental cost per hour',
 					},
+					discount: {
+						type: 'number',
+						description: 'Discount per day (if any)'
+					}
 				},
 			},
 			CreateRentalDto: {
@@ -142,11 +146,11 @@ const swaggerDefinition = {
 						type: 'string',
 						description: 'Rental ID',
 					},
-					carId: {
+					car: {
 						type: 'string',
 						description: 'Car ID',
 					},
-					userId: {
+					user: {
 						type: 'string',
 						description: 'User ID',
 					},
@@ -170,7 +174,7 @@ const swaggerDefinition = {
 						format: 'date-time',
 						description: 'Expected rental cost of the rental',
 					},
-					actualRentalCost: {
+					finalRentalCost: {
 						type: 'string',
 						format: 'date-time',
 						description: 'Actual rental cost of the rental',
@@ -179,8 +183,57 @@ const swaggerDefinition = {
 						type: 'string',
 						description: 'Status of the rental',
 					},
+					penalty: {
+						type: 'number',
+						description: 'Penalty for the rental'
+					},
+					discount: {
+						type: 'number',
+						description: 'Applied discount for the rental'
+					}
 				},
 			},
+			User: {
+				type: 'object',
+				properties: {
+					_id: {
+						type: 'string',
+						description: 'Unique ID of the user'
+					},
+					address: {
+						type: 'string',
+						description: 'Address of the user'
+					},
+					city: {
+						type: 'string',
+						description: 'City of the user'
+					},
+					country: {
+						type: 'string',
+						description: 'Country of the user'
+					},
+					firstName: {
+						type: 'string',
+						description: 'First name of the user'
+					},
+					lastName: {
+						type: 'string',
+						description: 'Last name of the user'
+					},
+					patronymic: {
+						type: 'string',
+						description: 'The name of the father of the user'
+					},
+					phone: {
+						type: 'string',
+						description: 'A phone number of the user (in Ukrainian format)'
+					},
+					password: {
+						type: 'string',
+						description: 'Hashed password'
+					}
+				}
+			}
 		},
 	},
 };

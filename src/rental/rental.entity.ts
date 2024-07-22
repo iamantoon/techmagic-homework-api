@@ -28,6 +28,6 @@ const rentalSchema = new Schema<RentalDocument>({
 	penalty: { type: Number, default: 0 },
 	finalRentalCost: { type: Number, required: true },
 	status: { type: String, enum: ['active', 'returned'], required: true },
-});
+}, { versionKey: false });
 
 export const RentalModel = model<RentalDocument>('Rental', rentalSchema);
