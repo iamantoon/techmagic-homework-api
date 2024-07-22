@@ -20,7 +20,7 @@ const swaggerDefinition = {
       Car: {
         type: 'object',
         properties: {
-          id: {
+          _id: {
             type: 'string',
             description: 'Car ID',
           },
@@ -36,9 +36,13 @@ const swaggerDefinition = {
             type: 'number',
             description: 'Year of manufacture',
           },
-          rentCost: {
+          cost: {
             type: 'number',
-            description: 'Rental cost per hour',
+            description: 'Cost of car'
+          },
+          type: {
+            type: 'string',
+            description: 'Type of car'
           },
           available: {
             type: 'boolean',
@@ -47,6 +51,10 @@ const swaggerDefinition = {
           photoUrl: {
             type: 'string',
             description: 'Photo of the car'
+          },
+          rentCost: {
+            type: 'number',
+            description: 'Rental cost per hour',
           }
         },
       },

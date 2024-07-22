@@ -54,40 +54,36 @@ export class CarsService implements ICarsService {
 		}
 	}
 
-	async rentCar(carId: string, dto: CreateRentalDto): Promise<CarDocument | null> {
-		try {
-			const car = await CarModel.findById(carId);
-			if (!car || !car.available) throw new Error('Car is not available');
-	
-			let today = new Date();
-			let tomorrow = new Date(today);
-			tomorrow.setDate(today.getDate() + 1);
-			if (new Date(dto.expectedReturnDate).getDate() < tomorrow.getDate()) throw new Error('Invalid date');
-	
-			const expectedRentalCost = await this.calculateRentalCost(dto.expectedReturnDate, new Date(), car.year, dto.userId);
-			const discount = await this.calculateDiscount(dto.userId);
-	
-			const rental = new RentalModel({
-				car: carId,
-				user: dto.userId,
-				startDate: new Date(),
-				expectedReturnDate: dto.expectedReturnDate,
-				expectedRentalCost,
-				discount,
-				penalty: 0,
-				finalRentalCost: expectedRentalCost,
-				status: 'active',
-			});
-	
-			await rental.save();
-	
-			car.available = false;
-			await car.save();
-	
-			return car;
-		} catch (error) {
-			throw new Error('Failed to rent car');
-		}
+	async rentCar(dto: CreateRentalDto, userId: string, carId: string): Promise<CarDocument | null> {
+		const car = await CarModel.findById(carId);
+		if (!car || !car.available) throw new Error('Car is not available');
+
+		let today = new Date();
+		let tomorrow = new Date(today);
+		tomorrow.setDate(today.getDate() + 1);
+		if (new Date(dto.expectedReturnDate).getDate() < tomorrow.getDate()) throw new Error('Invalid date');
+
+		const expectedRentalCost = await this.calculateRentalCost(dto.expectedReturnDate, new Date(), car.year, userId);
+		const discount = await this.calculateDiscount(userId);
+
+		const rental = new RentalModel({
+			car: carId,
+			user: userId,
+			startDate: new Date(),
+			expectedReturnDate: dto.expectedReturnDate,
+			expectedRentalCost,
+			discount,
+			penalty: 0,
+			finalRentalCost: expectedRentalCost,
+			status: 'active',
+		});
+
+		await rental.save();
+
+		car.available = false;
+		await car.save();
+
+		return car;
 	}
 
 	async returnCar(dto: ReturnCarDto): Promise<RentalDocument | null> {

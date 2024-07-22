@@ -13,7 +13,8 @@ import { TYPES } from '../types';
 import 'reflect-metadata';
 import { UserProfileDto } from './DTOs/user.dto';
 import { AuthMiddleware } from '../common/auth.middleware';
-
+import { AuthRepository } from './auth.repository';
+import jwt from 'jsonwebtoken';
 
 @injectable()
 /**
@@ -25,13 +26,14 @@ import { AuthMiddleware } from '../common/auth.middleware';
 export class AuthController extends BaseController implements IAuthController {
 	constructor(
 		@inject(TYPES.AuthService) private authService: AuthService,
+		@inject(TYPES.AuthRepository) private authRepository: AuthRepository,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 	) {
 		super();
 		this.bindRoutes([
 			{ path: '/login', method: 'post', func: this.login, middlewares: [new ValidateMiddleware(LoginDto)] },
 			{ path: '/register', method: 'post', func: this.register, middlewares: [new ValidateMiddleware(RegisterDto)] },
-			{ path: '/account/:id', method: 'get', func: this.getUserProfile, middlewares: [new AuthMiddleware(this.configService.get('SECRET'))] }
+			{ path: '/account', method: 'get', func: this.getUserProfile, middlewares: [new AuthMiddleware(this.configService.get('SECRET'))] }
 		]);
 	}
 
@@ -132,38 +134,63 @@ export class AuthController extends BaseController implements IAuthController {
 	}
 
 	/**
- * @swagger
- * /auth/profile:
- *   get:
- *     summary: Get the profile of the logged-in user
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: User profile data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   $ref: '#/components/schemas/User'
- *                 totalRents:
- *                   type: number
- *                 activeRents:
- *                   type: number
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: User not found
- */
-
+	 * @swagger
+	 * /auth/profile:
+	 *   get:
+	 *     summary: Get the profile of the logged-in user
+	 *     tags: [Auth]
+	 *     security:
+	 *       - bearerAuth: []
+	 *     responses:
+	 *       200:
+	 *         description: User profile data
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 user:
+	 *                   $ref: '#/components/schemas/User'
+	 *                 closedRents:
+	 *                   type: number
+	 *                 activeRents:
+	 *                   type: number
+	 *                 lastRents:
+	 *                   type: array
+	 *                   items:
+	 *                     $ref: '#/components/schemas/Rental'
+	 *       401:
+	 *         description: Unauthorized
+	 *       404:
+	 *         description: User not found
+	 */
 	async getUserProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
-			const userId = req.params.id;
-			const userProfile: UserProfileDto = await this.authService.getUserProfile(userId);
-			res.status(200).json(userProfile);
+			const token = req.headers['authorization']?.split(' ')[1];
+
+			if (!token) {
+				res.status(401).json({ message: 'Unauthorized' });
+				return;
+			} else {
+				jwt.verify(token, this.configService.get('SECRET'), async (err, decoded) => {
+					if (err) {
+						res.status(401).json({ message: 'Failed to authenticate token' });
+						return;
+					}
+
+					const userPhone = (decoded as any).phone;
+					const user = await this.authRepository.findByPhone(userPhone);
+					if (!user) {
+						res.status(400).json({ message: 'User not found' });
+						return;
+					}
+
+					const userId = user.id;
+
+					const userProfile: UserProfileDto = await this.authService.getUserProfile(userId);
+					res.status(200).json(userProfile);
+				})
+			}
 		} catch (error) {
 			next(error);
 		}

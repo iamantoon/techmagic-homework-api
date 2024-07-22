@@ -53,7 +53,7 @@ export class RentalService implements IRentalService {
 			}
 		}));
 		
-		return returnedRentalDetails;
+		return returnedRentalDetails.reverse();
 	}
 
 	async getUserActiveRentals(userId: string): Promise<any[]> {

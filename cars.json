@@ -1,0 +1,83 @@
+[
+	{
+	  "brand": "Mercedes",
+	  "carModel": "S680",
+	  "year": 2021,
+	  "cost": 150000,
+	  "type": "Sedan",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "BMW",
+	  "carModel": "X5",
+	  "year": 2019,
+	  "cost": 100000,
+	  "type": "SUV",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Audi",
+	  "carModel": "A6",
+	  "year": 2020,
+	  "cost": 90000,
+	  "type": "Sedan",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Toyota",
+	  "carModel": "Camry",
+	  "year": 2017,
+	  "cost": 60000,
+	  "type": "Sedan",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Honda",
+	  "carModel": "Civic",
+	  "year": 2018,
+	  "cost": 55000,
+	  "type": "Sedan",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Ford",
+	  "carModel": "F-150",
+	  "year": 2019,
+	  "cost": 70000,
+	  "type": "Truck",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Chevrolet",
+	  "carModel": "Malibu",
+	  "year": 2016,
+	  "cost": 50000,
+	  "type": "Sedan",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Lexus",
+	  "carModel": "RX350",
+	  "year": 2022,
+	  "cost": 120000,
+	  "type": "SUV",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	},
+	{
+	  "brand": "Nissan",
+	  "carModel": "Altima",
+	  "year": 2015,
+	  "cost": 40000,
+	  "type": "Sedan",
+	  "available": true,
+	  "photoUrl": "https://configurator.porsche.com/model-start/pictures/taycan/extcam102.webp"
+	}
+]
