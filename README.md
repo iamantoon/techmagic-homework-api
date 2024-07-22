@@ -1,16 +1,48 @@
-**Installation**
+# Car Rental Service API
 
-1. Download or clone the repository
-2. Create a .env file in the root directory and configure it based on the provided .env.example file
-3. Install dependencies: `npm install`
-4. Seed the database. Run the following command to seed the database with initial data. You only need to do this once: `npm run seed`
-6. Start the server: `npm run dev`. The server will start on port 5000
+## Installation
 
-**Usage**
+1. **Download or clone the repository:**
 
-1. Access the API: Navigate to http://localhost:5000 to access the API.
-2. View Swagger documentation: Navigate to http://localhost:5000/api-docs/ to view the Swagger documentation for the API.
+   ```sh
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-**Additional Notes**
+2. **Create a `.env` file:**
 
-Ensure your MongoDB database is accessible and the URI in your .env file is correct.
+   Create a `.env` file in the root directory and configure it based on the provided `.env.example` file.
+
+3. **Install dependencies:**
+
+   ```sh
+   npm install
+   ```
+
+4. **Seed the database:**
+
+   Run the following command to seed the database with initial data. You only need to do this once:
+
+   ```sh
+   npm run seed
+   ```
+
+   The seed data includes car information; no user or rental data is seeded.
+
+5. **Start the server:**
+
+   ```sh
+   npm run dev
+   ```
+
+   The server will start on port `5000`.
+
+## Usage
+
+1. **Access the API:**
+
+   Navigate to [http://localhost:5000](http://localhost:5000) to access the API.
+
+2. **View Swagger documentation:**
+
+   Navigate to [http://localhost:5000/api-docs/](http://localhost:5000/api-docs/) to view the Swagger documentation for the API.
