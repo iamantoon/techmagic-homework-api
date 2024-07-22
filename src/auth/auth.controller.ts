@@ -37,7 +37,7 @@ export class AuthController extends BaseController implements IAuthController {
 		]);
 	}
 
-	/**
+		/**
 	 * @swagger
 	 * /auth/login:
 	 *   post:
@@ -65,8 +65,8 @@ export class AuthController extends BaseController implements IAuthController {
 	 *                   type: string
 	 *                 jwt:
 	 *                   type: string
-	 *       401:
-	 *         description: Unauthorized
+	 *       400:
+	 *         description: Error occurred while validating user. You might have entered invalid data
 	 *       500:
 	 *         description: Internal server error
 	 */
@@ -74,7 +74,7 @@ export class AuthController extends BaseController implements IAuthController {
 		try {
 			const user = await this.authService.validateUser(req.body);
 			if (!user) {
-				next(new HTTPError(401, 'Error occurred while validating user', 'login'));
+				next(new HTTPError(400, 'Error occurred while validating user. You might have entered invalid data', 'login'));
 				return;
 			}
 			const jwt = await this.signJWT(req.body.phone, this.configService.get('SECRET'));
@@ -87,7 +87,7 @@ export class AuthController extends BaseController implements IAuthController {
 		}
 	}
 
-	/**
+		/**
 	 * @swagger
 	 * /auth/register:
 	 *   post:
@@ -111,8 +111,8 @@ export class AuthController extends BaseController implements IAuthController {
 	 *                   type: object
 	 *                 jwt:
 	 *                   type: string
-	 *       422:
-	 *         description: User already exists
+	 *       400:
+	 *         description: User already exists or invalid data (Fill all the required fields)
 	 *       500:
 	 *         description: Internal server error
 	 */
@@ -120,7 +120,7 @@ export class AuthController extends BaseController implements IAuthController {
 		try {
 			const result = await this.authService.createUser(req.body);
 			if (!result) {
-				next(new HTTPError(422, 'User already exists'));
+				next(new HTTPError(400, 'User already exists'));
 				return;
 			}
 			const jwt = await this.signJWT(req.body.phone, this.configService.get('SECRET'));

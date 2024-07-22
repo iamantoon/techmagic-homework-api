@@ -9,7 +9,7 @@ export class ValidateMiddleware implements IMiddleware {
 	execute({ body }: Request, res: Response, next: NextFunction): void {
 		const instance = plainToClass(this.classToValidate, body);
 		validate(instance).then((errors) => {
-			if (errors.length) res.status(422).send(errors);
+			if (errors.length) res.status(400).send(errors);
 			else next();
 		});
 	}

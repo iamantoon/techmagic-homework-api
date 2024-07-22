@@ -183,8 +183,13 @@ export class CarsController extends BaseController implements ICarsController {
 	 *               properties:
 	 *                 message:
 	 *                   type: string
+	 * 
+	 *       401:
+	 *         description: Unauthorized
+	 *       400:
+	 *         description: Invalid data (for example, a user is trying to rent a car which does not exist)
 	 *       500:
-	 *         description: Internal server error
+	 *         description: Internal server error (Failed to rent car)
 	 */
 	async rentCar(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
@@ -197,14 +202,14 @@ export class CarsController extends BaseController implements ICarsController {
 			} else {
 				jwt.verify(token, this.configService.get('SECRET'), async (err, decoded) => {
 					if (err) {
-						res.status(401).json({ message: 'Failed to authenticate token' });
+						res.status(401).json({ message: 'Unauthorized' });
 						return;
 					}
 
 					const userPhone = (decoded as any).phone;
 					const user = await this.authRepository.findByPhone(userPhone);
 					if (!user) {
-						res.status(400).json({ message: 'User not found' });
+						res.status(401).json({ message: 'Unauthorized' });
 						return;
 					}
 
@@ -260,8 +265,12 @@ export class CarsController extends BaseController implements ICarsController {
 	 *               properties:
 	 *                 message:
 	 *                   type: string
+	 *       401:
+	 *         description: Unauthorized
+	 *       400:
+	 *         description: Malformed request syntax
 	 *       500:
-	 *         description: Internal server error
+	 *         description: Internal server error (Failed to return car)
 	 */
 	async returnCar(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
@@ -273,14 +282,14 @@ export class CarsController extends BaseController implements ICarsController {
 			} else {
 				jwt.verify(token, this.configService.get('SECRET'), async (err, decoded) => {
 					if (err) {
-						res.status(401).json({ message: 'Failed to authenticate token' });
+						res.status(401).json({ message: 'Unauthorized' });
 						return;
 					}
 
 					const userPhone = (decoded as any).phone;
 					const user = await this.authRepository.findByPhone(userPhone);
 					if (!user) {
-						res.status(400).json({ message: 'User not found' });
+						res.status(401).json({ message: 'Unauthorized' });
 						return;
 					}
 
