@@ -61,10 +61,6 @@ const swaggerDefinition = {
 			CreateRentalDto: {
 				type: 'object',
 				properties: {
-					userId: {
-						type: 'string',
-						description: 'User ID',
-					},
 					expectedReturnDate: {
 						type: 'string',
 						format: 'date-time',
