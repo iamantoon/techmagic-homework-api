@@ -36,7 +36,7 @@ export class CarsController extends BaseController implements ICarsController {
 				middlewares: [new ValidateMiddleware(CreateRentalDto), new AuthMiddleware(this.configService.get('SECRET'))],
 			},
 			{
-				path: '/:id/return',
+				path: '/return',
 				method: 'post',
 				func: this.returnCar,
 				middlewares: [new ValidateMiddleware(ReturnCarDto), new AuthMiddleware(this.configService.get('SECRET'))],
@@ -236,19 +236,12 @@ export class CarsController extends BaseController implements ICarsController {
 
 	/**
 	 * @swagger
-	 * /cars/{id}/return:
+	 * /cars/return:
 	 *   post:
 	 *     summary: Return a car
 	 *     tags: [Cars]
 	 *     security:
 	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: path
-	 *         name: id
-	 *         schema:
-	 *           type: string
-	 *         required: true
-	 *         description: The car ID
 	 *     requestBody:
 	 *       required: true
 	 *       content:

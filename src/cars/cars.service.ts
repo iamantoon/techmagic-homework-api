@@ -57,15 +57,23 @@ export class CarsService implements ICarsService {
 	async rentCar(dto: CreateRentalDto, userId: string, carId: string): Promise<CarDocument | null> {
 		const car = await CarModel.findById(carId);
 		if (!car || !car.available) throw new Error('Car is not available');
-
+	
 		const today = new Date();
 		const tomorrow = new Date(today);
 		tomorrow.setDate(today.getDate() + 1);
-		if (new Date(dto.expectedReturnDate).getDate() < tomorrow.getDate()) throw new Error('Invalid date');
+	
+		const expectedReturnDate = new Date(dto.expectedReturnDate);
+		const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+		const startOfTomorrow = new Date(tomorrow.setHours(0, 0, 0, 0));
+		const startOfExpectedReturnDate = new Date(expectedReturnDate.setHours(0, 0, 0, 0));
+	
+		if (startOfExpectedReturnDate < startOfTomorrow) {
+			throw new Error('Invalid date: The return date must be at least one day after today');
+		}
 
-		const expectedRentalCost = await this.calculateRentalCost(dto.expectedReturnDate, new Date(), car.year, userId);
+		const expectedRentalCost = await this.calculateRentalCost(expectedReturnDate, new Date(), car.year, userId);
 		const discount = await this.calculateDiscount(userId);
-
+	
 		const rental = new RentalModel({
 			car: carId,
 			user: userId,
@@ -77,12 +85,12 @@ export class CarsService implements ICarsService {
 			finalRentalCost: expectedRentalCost,
 			status: 'active',
 		});
-
+	
 		await rental.save();
-
+	
 		car.available = false;
 		await car.save();
-
+	
 		return car;
 	}
 
