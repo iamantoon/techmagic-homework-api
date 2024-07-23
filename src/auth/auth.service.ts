@@ -7,7 +7,6 @@ import { TYPES } from '../types';
 import { IConfigService } from '../config/config.service.interface';
 import { IAuthRepository } from './auth.repository.interface';
 import { UserProfileDto } from './DTOs/user.dto';
-import { RentalDocument, RentalModel } from '../rental/rental.entity';
 
 @injectable()
 export class AuthService implements IAuthService {

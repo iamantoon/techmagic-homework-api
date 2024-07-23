@@ -16,6 +16,13 @@ const swaggerDefinition = {
 		},
 	],
 	components: {
+		securitySchemes: {
+			bearerAuth: {
+			  type: 'http',
+			  scheme: 'bearer',
+			  bearerFormat: 'JWT',
+			},
+		},
 		schemas: {
 			Car: {
 				type: 'object',
@@ -71,7 +78,7 @@ const swaggerDefinition = {
 						description: 'Expected end date of the rental',
 					},
 				},
-				required: ['userId', 'expectedReturnDate'],
+				required: ['expectedReturnDate'],
 			},
 			ReturnCarDto: {
 				type: 'object',
@@ -142,14 +149,14 @@ const swaggerDefinition = {
 			Rental: {
 				type: 'object',
 				properties: {
-				  	id: {
+				  	_id: {
 						type: 'string',
 						description: 'Rental ID',
 				  	},
-				  	carId: {
-						type: 'string',
-						description: 'Car ID',
-				  	},
+				  	// carId: {
+					// 	type: 'string',
+					// 	description: 'Car ID',
+				  	// },
 				  	car: {
 						type: 'object',
 						properties: {
@@ -239,10 +246,6 @@ const swaggerDefinition = {
 					phone: {
 						type: 'string',
 						description: 'A phone number of the user (in Ukrainian format)'
-					},
-					password: {
-						type: 'string',
-						description: 'Hashed password'
 					}
 				}
 			}
