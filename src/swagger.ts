@@ -142,55 +142,67 @@ const swaggerDefinition = {
 			Rental: {
 				type: 'object',
 				properties: {
-					id: {
+				  	id: {
 						type: 'string',
 						description: 'Rental ID',
-					},
-					car: {
+				  	},
+				  	carId: {
 						type: 'string',
 						description: 'Car ID',
-					},
-					user: {
+				  	},
+				  	car: {
+						type: 'object',
+						properties: {
+					  		brand: {
+								type: 'string',
+								description: 'Car brand',
+					  		},
+					  		carModel: {
+								type: 'string',
+								description: 'Car model',
+					  		},
+						},
+				  	},
+				  	user: {
 						type: 'string',
 						description: 'User ID',
-					},
-					startDate: {
+				  	},
+				  	startDate: {
 						type: 'string',
 						format: 'date-time',
 						description: 'Start date of the rental',
-					},
-					expectedReturnDate: {
+				  	},
+				  	expectedReturnDate: {
 						type: 'string',
 						format: 'date-time',
 						description: 'Expected return date of the rental',
-					},
-					actualReturnDate: {
+				  	},
+				  	actualReturnDate: {
 						type: 'string',
 						format: 'date-time',
 						description: 'Actual end date of the rental',
-					},
-					expectedRentalCost: {
-						type: 'string',
-						format: 'date-time',
+						nullable: true,
+				  	},
+				  		expectedRentalCost: {
+						type: 'number',
 						description: 'Expected rental cost of the rental',
-					},
-					finalRentalCost: {
-						type: 'string',
-						format: 'date-time',
+				  	},
+				  	finalRentalCost: {
+						type: 'number',
 						description: 'Actual rental cost of the rental',
-					},
-					status: {
+				  	},
+				  	status: {
 						type: 'string',
 						description: 'Status of the rental',
-					},
-					penalty: {
+				  	},
+				  	penalty: {
 						type: 'number',
-						description: 'Penalty for the rental'
-					},
-					discount: {
+						description: 'Penalty for the rental',
+				  	},
+				  	discount: {
 						type: 'number',
-						description: 'Applied discount for the rental'
-					}
+						description: 'Applied discount for the rental',
+				  	},
 				},
 			},
 			User: {
