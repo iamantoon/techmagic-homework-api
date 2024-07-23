@@ -81,7 +81,6 @@ export class RentalService implements IRentalService {
 							brand: car.brand,
 							carModel: car.carModel,
 						},
-						carId: car._id,
 						user: rental.user,
 					};
 				} else {

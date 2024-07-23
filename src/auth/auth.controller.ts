@@ -146,7 +146,7 @@ export class AuthController extends BaseController implements IAuthController {
 	 * @swagger
 	 * /auth/account:
 	 *   get:
-	 *     summary: Get the profile of the logged-in user
+	 *     summary: Get the account info of the logged-in user
 	 *     tags: [Auth]
 	 *     security:
 	 *       - bearerAuth: []
