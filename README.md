@@ -50,3 +50,7 @@
 ## Additional Notes
 
 Ensure your MongoDB database is accessible and the URI in your .env file is correct.
+
+To successfully register, please ensure you meet the following criteria:
+1. The phone number must be in Ukrainian format (for example, +380981234567)
+2. The password must be at least 8 characters long
